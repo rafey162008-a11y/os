@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}Coupons{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-ticket-perforated"></i> Coupons</h2>
+    <a href="{{ url_for('admin.coupon_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Coupon</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Code</th><th>Description</th><th>Type</th><th>Amount</th><th>Min Purchase</th><th>Used</th><th>Active</th><th></th></tr></thead>
+    <tbody>
+      {% for c in coupons %}
+      <tr>
+        <td><strong>{{ c.code }}</strong></td>
+        <td>{{ c.description or '-' }}</td>
+        <td>{{ c.discount_type }}</td>
+        <td>{{ c.discount_amount }}{% if c.discount_type == 'percentage' %}%{% else %}{{ store_currency }}{% endif %}</td>
+        <td>{{ money(c.min_purchase) }}</td>
+        <td>{{ c.used_count }}/{{ c.usage_limit or '∞' }}</td>
+        <td><span class="badge bg-{{ 'success' if c.is_active else 'secondary' }}">{{ c.is_active }}</span></td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.coupon_edit', coupon_id=c.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+          <form method="POST" action="{{ url_for('admin.coupon_delete', coupon_id=c.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete coupon?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted">No coupons.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

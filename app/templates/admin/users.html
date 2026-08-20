@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block title %}Staff Users{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-person-badge"></i> Staff Users</h2>
+    <a href="{{ url_for('admin.user_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New User</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Name</th><th>Email</th><th>Roles</th><th>Staff</th><th>Active</th><th>Joined</th><th></th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td><strong>{{ u.full_name }}</strong></td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.display_roles }}</td>
+        <td><span class="badge bg-{{ 'success' if u.is_staff else 'secondary' }}">{{ u.is_staff }}</span></td>
+        <td><span class="badge bg-{{ 'success' if u.is_active else 'danger' }}">{{ u.is_active }}</span></td>
+        <td>{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.user_edit', user_id=u.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+          <form method="POST" action="{{ url_for('admin.user_delete', user_id=u.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete user?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No users.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

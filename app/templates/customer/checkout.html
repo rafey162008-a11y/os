@@ -1,0 +1,128 @@
+{% extends "customer/base.html" %}
+{% block title %}Checkout - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title">Checkout</h2>
+  <div class="breadcrumb">Step 1: Shipping &nbsp;→&nbsp; Step 2: Payment &nbsp;→&nbsp; Step 3: Review</div>
+
+  <form method="post" action="{{ url_for('checkout.checkout') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="layout">
+      <!-- Left: forms -->
+      <div>
+        <!-- Shipping -->
+        <div class="card mb-3" style="padding:24px">
+          <h4><i class="bi bi-truck"></i> Shipping Information</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              {{ form.full_name(class="form-control") }}
+              {% for e in form.full_name.errors %}<div class="error">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              {{ form.email(class="form-control") }}
+              {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone</label>
+              {{ form.phone(class="form-control") }}
+              {% for e in form.phone.errors %}<div class="error">{{ e }}</div>{% endfor %}
+            </div>
+            <div class="form-group">
+              <label>Country</label>
+              {{ form.country(class="form-control") }}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Province/State</label>
+              {{ form.province(class="form-control") }}
+            </div>
+            <div class="form-group">
+              <label>City</label>
+              {{ form.city(class="form-control") }}
+              {% for e in form.city.errors %}<div class="error">{{ e }}</div>{% endfor %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Area / District</label>
+            {{ form.area(class="form-control") }}
+          </div>
+          <div class="form-group">
+            <label>Street Address</label>
+            {{ form.street_address(class="form-control") }}
+            {% for e in form.street_address.errors %}<div class="error">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="form-group">
+            <label>Postal Code</label>
+            {{ form.postal_code(class="form-control") }}
+          </div>
+        </div>
+
+        <!-- Shipping method -->
+        <div class="card mb-3" style="padding:24px">
+          <h4><i class="bi bi-box-seam"></i> Delivery Method</h4>
+          {% for val, label in form.shipping_method.choices %}
+          <div class="form-check mb-2">
+            <input type="radio" name="shipping_method" id="ship_{{ val }}" value="{{ val }}" {{ 'checked' if form.shipping_method.data == val or (not form.shipping_method.data and val == 'standard') }} onchange="this.form.submit()">
+            <label for="ship_{{ val }}">{{ label }}</label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Payment -->
+        <div class="card mb-3" style="padding:24px">
+          <h4><i class="bi bi-credit-card"></i> Payment Method</h4>
+          {% for val, label in form.payment_method.choices %}
+          <div class="form-check mb-2">
+            <input type="radio" name="payment_method" id="pay_{{ val }}" value="{{ val }}" {{ 'checked' if form.payment_method.data == val or (not form.payment_method.data and val == 'cod') }}>
+            <label for="pay_{{ val }}">{{ label }}</label>
+          </div>
+          {% endfor %}
+          <p class="text-muted" style="font-size:.85rem"><i class="bi bi-lock"></i> We never store your raw card details. Card payments are tokenized.</p>
+        </div>
+
+        <div class="card mb-3" style="padding:24px">
+          <h4>Order Notes</h4>
+          {{ form.notes(class="form-control", rows=3, placeholder="Optional notes for your order") }}
+        </div>
+      </div>
+
+      <!-- Right: summary -->
+      <aside>
+        <div class="cart-summary">
+          <h4>Order Summary</h4>
+          <div class="divider"></div>
+          {% for item in totals.items %}
+          <div class="summary-row"><span>{{ item.product.name }} × {{ item.quantity }}</span><span>{{ money(item.line_total) }}</span></div>
+          {% endfor %}
+          <div class="divider"></div>
+          <div class="summary-row"><span>Subtotal</span><span>{{ money(totals.subtotal) }}</span></div>
+          {% if discount %}
+          <div class="summary-row"><span>Coupon ({{ coupon_code }})</span><span>-{{ money(discount) }}</span></div>
+          {% endif %}
+          <div class="summary-row"><span>Shipping</span><span>{% if shipping == 0 %}FREE{% else %}{{ money(shipping) }}{% endif %}</span></div>
+          <div class="summary-row"><span>Tax</span><span>{{ money(tax) }}</span></div>
+          <div class="summary-row total"><span>Grand Total</span><span>{{ money(grand_total) }}</span></div>
+
+          <!-- Coupon -->
+          <div class="form-group mt-3">
+            <label>Have a coupon?</label>
+            <div class="d-flex gap-2">
+              <input type="text" name="coupon_code" class="form-control" value="{{ coupon_code }}" placeholder="CODE">
+              <button class="btn btn-outline" type="submit">Apply</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block mt-3" type="submit">Place Order <i class="bi bi-check-circle"></i></button>
+          <a href="{{ url_for('cart.view_cart') }}" class="btn btn-outline btn-block mt-2">Back to Cart</a>
+        </div>
+      </aside>
+    </div>
+  </form>
+</div>
+{% endblock %}

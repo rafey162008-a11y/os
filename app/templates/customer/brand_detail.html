@@ -1,0 +1,24 @@
+{% extends "customer/base.html" %}
+{% from "customer/macros.html" import product_card %}
+{% block title %}{{ brand.name }} - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <div class="breadcrumb">
+    <a href="{{ url_for('main.home') }}">Home</a> / <a href="{{ url_for('main.brands') }}">Brands</a> / <span>{{ brand.name }}</span>
+  </div>
+  <div class="card mb-4" style="padding:24px">
+    <h1 style="margin:0">{{ brand.name }}</h1>
+    {% if brand.description %}<p class="text-muted">{{ brand.description }}</p>{% endif %}
+  </div>
+
+  <h2 class="section-title">Products from {{ brand.name }}</h2>
+  {% if products %}
+  <div class="product-grid">
+    {% for p in products %}{{ product_card(p) }}{% endfor %}
+  </div>
+  {% else %}
+    <div class="alert alert-info">No products available from this brand yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block title %}Send Notification{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-bell"></i> Send Notification</h2>
+    <a href="{{ url_for('admin.notifications') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <form method="POST" class="admin-form">
+    <div class="mb-3"><label class="form-label">Title</label><input type="text" name="title" class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Message</label><textarea name="message" class="form-control" rows="4" required></textarea></div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Type</label>
+        <select name="type" class="form-select">
+          <option value="system">System</option>
+          <option value="order">Order</option>
+          <option value="payment">Payment</option>
+          <option value="offer">Offer</option>
+          <option value="wishlist">Wishlist</option>
+        </select>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Target</label>
+        <select name="target" class="form-select">
+          <option value="all">All Users</option>
+          <option value="single">Specific User</option>
+        </select>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">User (if specific)</label>
+        <select name="user_id" class="form-select">
+          <option value="">-- Select --</option>
+          {% for u in users %}<option value="{{ u.id }}">{{ u.full_name }} ({{ u.email }})</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="mb-3"><label class="form-label">Link (optional)</label><input type="text" name="link" class="form-control" placeholder="/orders"></div>
+    <button class="btn btn-primary"><i class="bi bi-send"></i> Send</button>
+  </form>
+</div>
+{% endblock %}

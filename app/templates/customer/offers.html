@@ -1,0 +1,17 @@
+{% extends "customer/base.html" %}
+{% from "customer/macros.html" import product_card %}
+{% block title %}Offers & Discounts - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title"><i class="bi bi-tag text-danger"></i> Special Offers</h2>
+  <p class="section-sub">Grab these discounted products before they're gone</p>
+  {% if products %}
+  <div class="product-grid">
+    {% for p in products %}{{ product_card(p) }}{% endfor %}
+  </div>
+  {% else %}
+    <div class="alert alert-info">No offers available right now. Check back soon!</div>
+  {% endif %}
+</div>
+{% endblock %}

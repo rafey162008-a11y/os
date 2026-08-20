@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-tags"></i> Categories</h2>
+    <a href="{{ url_for('admin.category_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Category</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Image</th><th>Name</th><th>Slug</th><th>Subcategories</th><th>Status</th><th>Order</th><th></th></tr></thead>
+    <tbody>
+      {% for cat in categories %}
+      <tr>
+        <td>{% if cat.image %}<img src="{{ product_image_url(cat.image) }}" style="height:40px;width:40px;object-fit:cover;border-radius:6px;">{% else %}<span class="text-muted">-</span>{% endif %}</td>
+        <td><strong>{{ cat.name }}</strong></td>
+        <td>{{ cat.slug }}</td>
+        <td>{{ cat.subcategories.count() }}</td>
+        <td><span class="badge bg-{{ 'success' if cat.status == 'active' else 'secondary' }}">{{ cat.status }}</span></td>
+        <td>{{ cat.display_order }}</td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.category_edit', category_id=cat.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+          <form method="POST" action="{{ url_for('admin.category_delete', category_id=cat.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete category?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% for sub in cat.subcategories %}
+      <tr>
+        <td></td>
+        <td>&nbsp;&nbsp;&nbsp;<i class="bi bi-arrow-return-right"></i> {{ sub.name }}</td>
+        <td>{{ sub.slug }}</td>
+        <td>-</td>
+        <td><span class="badge bg-{{ 'success' if sub.status == 'active' else 'secondary' }}">{{ sub.status }}</span></td>
+        <td>{{ sub.display_order }}</td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.category_edit', category_id=sub.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+          <form method="POST" action="{{ url_for('admin.category_delete', category_id=sub.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete subcategory?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No categories found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

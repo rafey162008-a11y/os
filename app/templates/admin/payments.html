@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+{% block title %}Payments{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-credit-card"></i> Payments</h2>
+  </div>
+  <form method="GET" class="admin-toolbar">
+    <select name="status" class="form-select" style="max-width:220px;">
+      <option value="">All Statuses</option>
+      {% for k, v in payment_statuses %}
+      <option value="{{ k }}" {{ 'selected' if status == k }}>{{ v }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+  </form>
+  <table class="admin-table">
+    <thead><tr><th>Reference</th><th>Date</th><th>Order</th><th>Method</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for p in payments.items %}
+      <tr>
+        <td>{{ p.payment_reference }}</td>
+        <td>{{ p.payment_date.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ p.order.order_number if p.order else '-' }}</td>
+        <td>{{ p.method_display }}</td>
+        <td>{{ money(p.amount) }}</td>
+        <td><span class="badge bg-{{ 'success' if p.status == 'paid' else ('warning' if p.status == 'pending' else 'danger') }}">{{ p.status }}</span></td>
+        <td class="text-end">
+          <form method="POST" action="{{ url_for('admin.payment_update_status', payment_id=p.id) }}" class="d-inline">
+            <select name="status" class="form-select form-select-sm d-inline" style="width:auto;" onchange="this.form.submit()">
+              {% for k, v in payment_statuses %}
+              <option value="{{ k }}" {{ 'selected' if p.status == k }}>{{ v }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No payments.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

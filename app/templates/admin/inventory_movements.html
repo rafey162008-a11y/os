@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+{% block title %}Inventory Movements{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-arrow-left-right"></i> Inventory Movements</h2>
+    <a href="{{ url_for('admin.inventory') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Date</th><th>Product</th><th>Change</th><th>Reason</th><th>Stock After</th><th>Notes</th></tr></thead>
+    <tbody>
+      {% for m in movements.items %}
+      <tr>
+        <td>{{ m.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ m.product.name if m.product else '-' }}</td>
+        <td><span class="{{ 'text-success' if m.quantity_change > 0 else 'text-danger' }}">{{ '+' if m.quantity_change > 0 else '' }}{{ m.quantity_change }}</span></td>
+        <td><span class="badge bg-secondary">{{ m.reason }}</span></td>
+        <td>{{ m.stock_after }}</td>
+        <td class="text-muted">{{ m.notes or '' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted">No movements recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

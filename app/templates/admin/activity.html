@@ -1,0 +1,26 @@
+{% extends "admin/base.html" %}
+{% block title %}Activity Logs{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-activity"></i> Activity Logs</h2>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Date</th><th>User</th><th>Action</th><th>Entity</th><th>Description</th></tr></thead>
+    <tbody>
+      {% for log in logs.items %}
+      <tr>
+        <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ log.user_name or '-' }}</td>
+        <td><span class="badge bg-secondary">{{ log.action }}</span></td>
+        <td>{{ log.entity or '-' }}{% if log.entity_id %} #{{ log.entity_id }}{% endif %}</td>
+        <td>{{ log.description or '' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted">No activity recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

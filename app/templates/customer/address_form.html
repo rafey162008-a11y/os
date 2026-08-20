@@ -1,0 +1,59 @@
+{% extends "customer/base.html" %}
+{% block title %}{{ title }} - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container section" style="max-width:600px">
+  <div class="card" style="padding:24px">
+    <h4>{{ title }}</h4>
+    <form method="post" action="{{ request.path }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Label (e.g. Home, Work)</label>
+        {{ form.label(class="form-control") }}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Country</label>
+          {{ form.country(class="form-control") }}
+        </div>
+        <div class="form-group">
+          <label>Province/State</label>
+          {{ form.province(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>City</label>
+          {{ form.city(class="form-control") }}
+          {% for e in form.city.errors %}<div class="error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>Area/District</label>
+          {{ form.area(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Street Address</label>
+        {{ form.street_address(class="form-control") }}
+        {% for e in form.street_address.errors %}<div class="error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Postal Code</label>
+          {{ form.postal_code(class="form-control") }}
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          {{ form.phone(class="form-control") }}
+        </div>
+      </div>
+      <div class="form-group form-check">
+        {{ form.is_default() }}
+        <label for="is_default">Set as default address</label>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Save Address</button>
+      <a href="{{ url_for('customer.addresses') }}" class="btn btn-outline btn-block mt-2">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

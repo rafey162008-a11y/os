@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block title %}Brands{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-award"></i> Brands</h2>
+    <a href="{{ url_for('admin.brand_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Brand</a>
+  </div>
+  <div class="row">
+    {% for b in brands %}
+    <div class="col-md-4 mb-3">
+      <div class="card h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          {% if b.logo %}<img src="{{ product_image_url(b.logo) }}" style="height:48px;width:48px;object-fit:contain;">{% endif %}
+          <div class="flex-grow-1">
+            <h6 class="mb-0">{{ b.name }}</h6>
+            <small class="text-muted">{{ b.products.count() }} products</small>
+          </div>
+          <div>
+            <a href="{{ url_for('admin.brand_edit', brand_id=b.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+            <form method="POST" action="{{ url_for('admin.brand_delete', brand_id=b.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-danger" onclick="return confirm('Delete brand?')"><i class="bi bi-trash"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="col-12"><div class="alert alert-info">No brands yet.</div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

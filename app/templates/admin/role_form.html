@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if role %}Edit Role{% else %}New Role{% endif %}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-shield-lock"></i> {% if role %}Edit {{ role.name }}{% else %}New Role{% endif %}</h2>
+    <a href="{{ url_for('admin.roles') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <form method="POST" class="admin-form">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Role Name</label>
+        <input type="text" name="name" class="form-control" value="{{ role.name if role else '' }}" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Description</label>
+        <input type="text" name="description" class="form-control" value="{{ role.description if role else '' }}">
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Permissions</label>
+      <div class="row">
+        {% for perm in all_permissions %}
+        <div class="col-md-4 mb-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="permissions" value="{{ perm }}"
+                   id="perm-{{ perm }}" {{ 'checked' if current_perms and perm in current_perms }}>
+            <label class="form-check-label" for="perm-{{ perm }}">{{ perm }}</label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <button class="btn btn-primary"><i class="bi bi-save"></i> Save Role</button>
+  </form>
+</div>
+{% endblock %}

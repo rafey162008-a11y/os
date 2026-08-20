@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}Purchases{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-bag-check"></i> Purchases</h2>
+    <a href="{{ url_for('admin.purchase_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Record Purchase</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Purchase #</th><th>Date</th><th>Supplier</th><th>Items</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for p in purchases.items %}
+      <tr>
+        <td>{{ p.purchase_number }}</td>
+        <td>{{ p.purchased_at.strftime('%Y-%m-%d') }}</td>
+        <td>{{ p.supplier.name if p.supplier else '-' }}</td>
+        <td>{{ p.items.count() }}</td>
+        <td>{{ money(p.total_amount) }}</td>
+        <td>{{ money(p.amount_paid) }}</td>
+        <td>{{ money(p.balance) }}</td>
+        <td><span class="badge bg-{{ 'success' if p.status == 'received' else 'secondary' }}">{{ p.status }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted">No purchases recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% block title %}Adjust Stock - {{ product.name }}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-sliders"></i> Adjust Stock: {{ product.name }}</h2>
+    <a href="{{ url_for('admin.inventory') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <div class="alert alert-info">Current stock: <strong>{{ product.stock_quantity }}</strong></div>
+  <form method="POST" class="admin-form" style="max-width:480px;">
+    <div class="mb-3">
+      <label class="form-label">Change (use negative to reduce)</label>
+      <input type="number" name="change" class="form-control" value="0" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Reason</label>
+      <select name="reason" class="form-select">
+        <option value="adjustment">Manual Adjustment</option>
+        <option value="damage">Damage / Loss</option>
+        <option value="correction">Correction</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Note</label>
+      <input type="text" name="note" class="form-control">
+    </div>
+    <button class="btn btn-primary"><i class="bi bi-check-lg"></i> Apply</button>
+  </form>
+</div>
+{% endblock %}

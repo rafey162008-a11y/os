@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Product Report{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-box-seam"></i> Product Report</h2>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin.report_products', format='csv') }}" class="btn btn-light"><i class="bi bi-filetype-csv"></i> CSV</a>
+      <a href="{{ url_for('admin.report_products', format='excel') }}" class="btn btn-light"><i class="bi bi-filetype-xlsx"></i> Excel</a>
+      <a href="{{ url_for('admin.report_products', format='pdf') }}" class="btn btn-light"><i class="bi bi-filetype-pdf"></i> PDF</a>
+    </div>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>ID</th><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Sold</th><th>Category</th></tr></thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ p.sku }}</td>
+        <td>{{ money(p.price) }}</td>
+        <td>{{ p.stock_quantity }}</td>
+        <td>{{ p.sold_count }}</td>
+        <td>{{ p.category.name if p.category else '' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No products.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

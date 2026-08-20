@@ -1,0 +1,49 @@
+{% extends "customer/base.html" %}
+{% block title %}My Profile - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-title">Account</div>
+      <a href="{{ url_for('customer.dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+      <a href="{{ url_for('customer.profile') }}" class="active"><i class="bi bi-person"></i> Profile</a>
+      <a href="{{ url_for('customer.change_password') }}"><i class="bi bi-key"></i> Change Password</a>
+      <a href="{{ url_for('customer.addresses') }}"><i class="bi bi-geo-alt"></i> Addresses</a>
+      <div class="sidebar-title">Shopping</div>
+      <a href="{{ url_for('customer.my_orders') }}"><i class="bi bi-bag"></i> My Orders</a>
+      <a href="{{ url_for('customer.wishlist') }}"><i class="bi bi-heart"></i> Wishlist</a>
+      <a href="{{ url_for('customer.my_returns') }}"><i class="bi bi-arrow-return-left"></i> Returns</a>
+      <a href="{{ url_for('customer.my_reviews') }}"><i class="bi bi-star"></i> My Reviews</a>
+      <a href="{{ url_for('customer.notifications') }}"><i class="bi bi-bell"></i> Notifications</a>
+    </aside>
+
+    <div>
+      <div class="card" style="padding:24px;max-width:600px">
+        <h4>Edit Profile</h4>
+        <form method="post" action="{{ url_for('customer.profile') }}" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="form-group">
+            <label>Full Name</label>
+            {{ form.full_name(class="form-control") }}
+            {% for e in form.full_name.errors %}<div class="error">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input class="form-control" value="{{ current_user.email }}" disabled>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            {{ form.phone(class="form-control") }}
+          </div>
+          <div class="form-group">
+            <label>Avatar</label>
+            {{ form.avatar(class="form-control") }}
+          </div>
+          <button class="btn btn-primary" type="submit">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

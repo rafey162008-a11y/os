@@ -1,0 +1,155 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-box-seam"></i> {{ title }}</h2>
+    <a href="{{ url_for('admin.products') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back to Products</a>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    {{ form.csrf_token }}
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-section">
+          <h4>Basic Information</h4>
+          <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+            {% for e in form.name.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              {{ form.sku.label(class="form-label") }}
+              {{ form.sku(class="form-control") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ form.condition.label(class="form-label") }}
+              {{ form.condition(class="form-select") }}
+            </div>
+          </div>
+          <div class="mb-3">
+            {{ form.short_description.label(class="form-label") }}
+            {{ form.short_description(class="form-control", rows=2) }}
+          </div>
+          <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=6) }}
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Pricing & Inventory</h4>
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              {{ form.price.label(class="form-label") }}
+              {{ form.price(class="form-control") }}
+            </div>
+            <div class="col-md-4 mb-3">
+              {{ form.old_price.label(class="form-label") }}
+              {{ form.old_price(class="form-control") }}
+            </div>
+            <div class="col-md-4 mb-3">
+              {{ form.cost_price.label(class="form-label") }}
+              {{ form.cost_price(class="form-control") }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              {{ form.stock_quantity.label(class="form-label") }}
+              {{ form.stock_quantity(class="form-control") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ form.min_stock_level.label(class="form-label") }}
+              {{ form.min_stock_level(class="form-control") }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Attributes</h4>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              {{ form.colors.label(class="form-label") }}
+              {{ form.colors(class="form-control", placeholder="Red, Blue, Green") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ form.sizes.label(class="form-label") }}
+              {{ form.sizes(class="form-control", placeholder="S, M, L, XL") }}
+            </div>
+          </div>
+          <div class="mb-3">
+            {{ form.video_url.label(class="form-label") }}
+            {{ form.video_url(class="form-control") }}
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Additional Info</h4>
+          <div class="mb-3">
+            {{ form.warranty_info.label(class="form-label") }}
+            {{ form.warranty_info(class="form-control", rows=2) }}
+          </div>
+          <div class="mb-3">
+            {{ form.return_policy.label(class="form-label") }}
+            {{ form.return_policy(class="form-control", rows=2) }}
+          </div>
+          <div class="mb-3">
+            {{ form.shipping_info.label(class="form-label") }}
+            {{ form.shipping_info(class="form-control", rows=2) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-section">
+          <h4>Organization</h4>
+          <div class="mb-3">
+            {{ form.category_id.label(class="form-label") }}
+            {{ form.category_id(class="form-select") }}
+          </div>
+          <div class="mb-3">
+            {{ form.subcategory_id.label(class="form-label") }}
+            {{ form.subcategory_id(class="form-select") }}
+          </div>
+          <div class="mb-3">
+            {{ form.brand_id.label(class="form-label") }}
+            {{ form.brand_id(class="form-select") }}
+          </div>
+          <div class="mb-3">
+            {{ form.status.label(class="form-label") }}
+            {{ form.status(class="form-select") }}
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Main Image</h4>
+          <div class="mb-3">
+            {{ form.main_image.label(class="form-label") }}
+            {{ form.main_image(class="form-control") }}
+          </div>
+          {% if product and product.main_image %}
+          <div class="mb-2">
+            <img src="{{ product_image_url(product.main_image) }}" alt="Current" class="img-thumbnail" style="max-height:140px;">
+            <div class="small text-muted">Current image</div>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="form-section">
+          <h4>Flags</h4>
+          <div class="form-check form-switch mb-2">{{ form.is_featured(class="form-check-input") }} {{ form.is_featured.label(class="form-check-label") }}</div>
+          <div class="form-check form-switch mb-2">{{ form.is_bestseller(class="form-check-input") }} {{ form.is_bestseller.label(class="form-check-label") }}</div>
+          <div class="form-check form-switch mb-2">{{ form.is_new_arrival(class="form-check-input") }} {{ form.is_new_arrival.label(class="form-check-label") }}</div>
+          <div class="form-check form-switch mb-2">{{ form.is_flash_sale(class="form-check-input") }} {{ form.is_flash_sale.label(class="form-check-label") }}</div>
+          <div class="form-check form-switch mb-2">{{ form.is_recommended(class="form-check-input") }} {{ form.is_recommended.label(class="form-check-label") }}</div>
+        </div>
+
+        <div class="d-grid">
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

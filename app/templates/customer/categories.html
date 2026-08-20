@@ -1,0 +1,20 @@
+{% extends "customer/base.html" %}
+{% block title %}Categories - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title">All Categories</h2>
+  <p class="section-sub">Browse our product categories</p>
+  <div class="product-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+    {% for c in categories %}
+    <a href="{{ url_for('products.category', slug=c.slug) }}" class="card" style="padding:24px">
+      <i class="bi bi-collection" style="font-size:2rem;color:var(--primary)"></i>
+      <h4 style="margin:10px 0 4px">{{ c.name }}</h4>
+      {% if c.subcategories %}
+      <small class="text-muted">{{ c.subcategories|length }} subcategories</small>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "customer/base.html" %}
+{% block title %}Order {{ order.order_number }} - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <div class="d-flex justify-between align-center mb-3">
+    <h2 class="section-title" style="margin:0">Order {{ order.order_number }}</h2>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('orders.invoice', order_id=order.id) }}" class="btn btn-outline btn-sm"><i class="bi bi-file-earmark-pdf"></i> Invoice</a>
+      {% if order.can_cancel %}
+      <form method="post" action="{{ url_for('orders.cancel_order', order_id=order.id) }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Cancel this order?')">Cancel Order</button>
+      </form>
+      {% endif %}
+      <form method="post" action="{{ url_for('orders.reorder', order_id=order.id) }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-arrow-repeat"></i> Reorder</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-8">
+      <div class="card" style="padding:20px">
+        <h4>Items</h4>
+        <table class="table">
+          <thead><tr><th>Product</th><th>Unit</th><th>Qty</th><th>Total</th></tr></thead>
+          <tbody>
+          {% for item in order.items %}
+            <tr>
+              <td>
+                <div class="d-flex gap-2 align-center">
+                  <img src="{{ product_image_url(item.image) }}" style="width:50px;height:50px;object-fit:cover;border-radius:6px">
+                  <div>
+                    <a href="{{ url_for('products.detail', slug=item.product.slug) if item.product else '#' }}" style="color:var(--dark);font-weight:600">{{ item.product_name }}</a>
+                    {% if item.variant_label %}<br><small class="text-muted">{{ item.variant_label }}</small>{% endif %}
+                  </div>
+                </div>
+              </td>
+              <td>{{ money(item.unit_price) }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ money(item.line_total) }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        <div class="text-right" style="max-width:300px;margin-left:auto">
+          <div class="summary-row"><span>Subtotal</span><span>{{ money(order.subtotal) }}</span></div>
+          {% if order.discount %}<div class="summary-row"><span>Discount</span><span>-{{ money(order.discount) }}</span></div>{% endif %}
+          <div class="summary-row"><span>Tax</span><span>{{ money(order.tax) }}</span></div>
+          <div class="summary-row"><span>Shipping</span><span>{{ money(order.shipping_charge) }}</span></div>
+          <div class="summary-row total"><span>Grand Total</span><span>{{ money(order.grand_total) }}</span></div>
+        </div>
+      </div>
+
+      <!-- Tracking timeline -->
+      {% if order.shipment %}
+      <div class="card mt-3" style="padding:20px">
+        <h4>Delivery Tracking</h4>
+        <p><strong>Tracking #:</strong> {{ order.shipment.tracking_number }}</p>
+        <p><strong>Carrier:</strong> {{ order.shipment.shipping_company }}</p>
+        <p><strong>Status:</strong> {{ status_badge(order.shipment.delivery_status) }}</p>
+        {% if order.shipment.expected_delivery %}<p><strong>Expected:</strong> {{ order.shipment.expected_delivery.strftime('%b %d, %Y') }}</p>{% endif %}
+        {% if order.shipment.delivered_at %}<p><strong>Delivered:</strong> {{ order.shipment.delivered_at.strftime('%b %d, %Y %H:%M') }}</p>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="col-4">
+      <div class="card" style="padding:20px">
+        <h4>Order Info</h4>
+        <p><strong>Status:</strong> {{ status_badge(order.status) }}</p>
+        <p><strong>Payment:</strong> {{ status_badge(order.payment_status) }} ({{ order.payments.first().method_display if order.payments.first() else 'N/A' }})</p>
+        <p><strong>Placed:</strong> {{ order.placed_at.strftime('%b %d, %Y %H:%M') }}</p>
+        <p><strong>Shipping Method:</strong> {{ order.shipping_method.title() }}</p>
+      </div>
+      <div class="card mt-3" style="padding:20px">
+        <h4>Shipping Address</h4>
+        <p style="white-space:pre-line;margin:0">{{ order.shipping_address }}</p>
+      </div>
+      {% if order.notes %}
+      <div class="card mt-3" style="padding:20px">
+        <h4>Notes</h4>
+        <p style="white-space:pre-line;margin:0">{{ order.notes }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

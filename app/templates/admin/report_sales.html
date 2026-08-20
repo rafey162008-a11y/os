@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}Sales Report{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-graph-up"></i> Sales Report</h2>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin.report_sales', start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'), format='csv') }}" class="btn btn-light"><i class="bi bi-filetype-csv"></i> CSV</a>
+      <a href="{{ url_for('admin.report_sales', start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'), format='excel') }}" class="btn btn-light"><i class="bi bi-filetype-xlsx"></i> Excel</a>
+      <a href="{{ url_for('admin.report_sales', start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'), format='pdf') }}" class="btn btn-light"><i class="bi bi-filetype-pdf"></i> PDF</a>
+    </div>
+  </div>
+  <form method="GET" class="admin-toolbar">
+    <label class="form-label me-2">From</label>
+    <input type="date" name="start" value="{{ start.strftime('%Y-%m-%d') }}" class="form-control" style="max-width:200px;">
+    <label class="form-label mx-2">To</label>
+    <input type="date" name="end" value="{{ end.strftime('%Y-%m-%d') }}" class="form-control" style="max-width:200px;">
+    <button class="btn btn-primary"><i class="bi bi-filter"></i> Filter</button>
+  </form>
+  <div class="row mb-3">
+    <div class="col-md-4"><div class="stat-card"><div class="stat-value">{{ total_orders }}</div><div class="stat-label">Orders</div></div></div>
+    <div class="col-md-4"><div class="stat-card"><div class="stat-value">{{ money(total_revenue) }}</div><div class="stat-label">Revenue (Paid)</div></div></div>
+    <div class="col-md-4"><div class="stat-card"><div class="stat-value">{{ money(total_revenue / total_orders) if total_orders else money(0) }}</div><div class="stat-label">Avg Order</div></div></div>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Order #</th><th>Date</th><th>Customer</th><th>Status</th><th>Payment</th><th>Total</th></tr></thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td>{{ o.order_number }}</td>
+        <td>{{ o.placed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ o.customer.full_name if o.customer else '' }}</td>
+        <td><span class="badge bg-info">{{ o.status }}</span></td>
+        <td>{{ o.payment_status }}</td>
+        <td>{{ money(o.grand_total) }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted">No orders in range.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

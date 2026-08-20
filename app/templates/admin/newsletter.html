@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}Newsletter Subscribers{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-envelope"></i> Newsletter Subscribers</h2>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Email</th><th>Active</th><th>Subscribed</th></tr></thead>
+    <tbody>
+      {% for s in subscribers %}
+      <tr>
+        <td>{{ s.email }}</td>
+        <td><span class="badge bg-{{ 'success' if s.active else 'secondary' }}">{{ s.active }}</span></td>
+        <td>{{ s.created_at.strftime('%Y-%m-%d') }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3" class="text-center text-muted">No subscribers.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

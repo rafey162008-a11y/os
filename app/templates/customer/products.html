@@ -1,0 +1,113 @@
+{% extends "customer/base.html" %}
+{% from "customer/macros.html" import product_card, pagination %}
+{% block title %}Shop Products - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <div class="layout">
+    <!-- Filters -->
+    <aside class="sidebar">
+      <h5>Filters</h5>
+      <form method="get" action="{{ url_for('products.browse') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+          <label>Search</label>
+          <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="Keyword">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category" class="form-control">
+            <option value="">All Categories</option>
+            {% for c in categories %}
+              <option value="{{ c.id }}" {% if args.get('category', type=int) == c.id %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Brand</label>
+          <select name="brand" class="form-control">
+            <option value="">All Brands</option>
+            {% for b in brands %}
+              <option value="{{ b.id }}" {% if args.get('brand', type=int) == b.id %}selected{% endif %}>{{ b.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Min Price</label>
+            <input type="number" step="0.01" name="min_price" class="form-control" value="{{ args.get('min_price', '') }}" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Max Price</label>
+            <input type="number" step="0.01" name="max_price" class="form-control" value="{{ args.get('max_price', '') }}" placeholder="Any">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Availability</label>
+          <select name="availability" class="form-control">
+            <option value="">Any</option>
+            <option value="in_stock" {% if args.get('availability') == 'in_stock' %}selected{% endif %}>In Stock</option>
+            <option value="out_of_stock" {% if args.get('availability') == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Rating</label>
+          <select name="rating" class="form-control">
+            <option value="">Any</option>
+            <option value="4" {% if args.get('rating', type=int) == 4 %}selected{% endif %}>& up 4 stars</option>
+            <option value="3" {% if args.get('rating', type=int) == 3 %}selected{% endif %}>& up 3 stars</option>
+            <option value="2" {% if args.get('rating', type=int) == 2 %}selected{% endif %}>& up 2 stars</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Condition</label>
+          <select name="condition" class="form-control">
+            <option value="">Any</option>
+            <option value="new" {% if args.get('condition') == 'new' %}selected{% endif %}>New</option>
+            <option value="used" {% if args.get('condition') == 'used' %}selected{% endif %}>Used</option>
+            <option value="refurbished" {% if args.get('condition') == 'refurbished' %}selected{% endif %}>Refurbished</option>
+          </select>
+        </div>
+        <div class="form-group form-check">
+          <input type="checkbox" name="discount" value="yes" {% if args.get('discount') == 'yes' %}checked{% endif %} id="disc">
+          <label for="disc">On Discount Only</label>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Apply Filters</button>
+        <a href="{{ url_for('products.browse') }}" class="btn btn-outline btn-block mt-2">Clear</a>
+      </form>
+    </aside>
+
+    <!-- Results -->
+    <div>
+      <div class="d-flex justify-between align-center mb-3">
+        <h2 class="section-title" style="margin:0">{{ total }} Products</h2>
+        <form method="get" action="{{ url_for('products.browse') }}" class="d-flex gap-2 align-center">
+          {% for k, v in args.items() %}
+            {% if k not in ['sort', 'page'] %}
+              <input type="hidden" name="{{ k }}" value="{{ v }}">
+            {% endif %}
+          {% endfor %}
+          <label class="text-muted">Sort:</label>
+          <select name="sort" class="form-control" style="width:auto" onchange="this.form.submit()">
+            <option value="newest" {% if args.get('sort') == 'newest' %}selected{% endif %}>Newest</option>
+            <option value="price_asc" {% if args.get('sort') == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_desc" {% if args.get('sort') == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+            <option value="best_selling" {% if args.get('sort') == 'best_selling' %}selected{% endif %}>Best Selling</option>
+            <option value="biggest_discount" {% if args.get('sort') == 'biggest_discount' %}selected{% endif %}>Biggest Discount</option>
+            <option value="name" {% if args.get('sort') == 'name' %}selected{% endif %}>Name A-Z</option>
+          </select>
+        </form>
+      </div>
+
+      {% if products %}
+        <div class="product-grid">
+          {% for p in products %}{{ product_card(p) }}{% endfor %}
+        </div>
+        {{ pagination(pagination, 'products.browse', **dict(args)) }}
+      {% else %}
+        <div class="alert alert-info">No products found matching your filters.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

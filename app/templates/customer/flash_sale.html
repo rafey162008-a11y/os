@@ -1,0 +1,19 @@
+{% extends "customer/base.html" %}
+{% from "customer/macros.html" import product_card %}
+{% block title %}Flash Sale - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <div class="hero" style="background:linear-gradient(120deg,#dc2626,#f59e0b);color:#fff;border-radius:var(--radius);padding:40px;text-align:center">
+    <h1><i class="bi bi-lightning-fill"></i> Flash Sale!</h1>
+    <p>Limited-time deals at unbeatable prices. Hurry, while stocks last!</p>
+  </div>
+  {% if products %}
+  <div class="product-grid mt-4">
+    {% for p in products %}{{ product_card(p) }}{% endfor %}
+  </div>
+  {% else %}
+    <div class="alert alert-info mt-4">No flash sale items right now.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if banner %}Edit Banner{% else %}New Banner{% endif %}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-card-image"></i> {% if banner %}Edit Banner{% else %}New Banner{% endif %}</h2>
+    <a href="{{ url_for('admin.banners') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <form method="POST" enctype="multipart/form-data" class="admin-form">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="mb-3"><label class="form-label">Title</label><input type="text" name="title" class="form-control" value="{{ banner.title if banner else '' }}"></div>
+        <div class="mb-3"><label class="form-label">Subtitle</label><input type="text" name="subtitle" class="form-control" value="{{ banner.subtitle if banner else '' }}"></div>
+        <div class="mb-3"><label class="form-label">Link</label><input type="text" name="link" class="form-control" value="{{ banner.link if banner else '' }}" placeholder="/products"></div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Position</label>
+            <select name="position" class="form-select">
+              <option value="home_hero" {{ 'selected' if banner and banner.position == 'home_hero' }}>Home Hero</option>
+              <option value="promo" {{ 'selected' if banner and banner.position == 'promo' }}>Promo</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Display Order</label>
+            <input type="number" name="display_order" class="form-control" value="{{ banner.display_order if banner else 0 }}">
+          </div>
+        </div>
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" name="active" id="active" {{ 'checked' if not banner or banner.active }}>
+          <label class="form-check-label" for="active">Active</label>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="mb-3"><label class="form-label">Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+        {% if banner and banner.image %}
+        <img src="{{ product_image_url(banner.image) }}" class="img-thumbnail" style="max-height:160px;">
+        {% endif %}
+      </div>
+    </div>
+    <button class="btn btn-primary"><i class="bi bi-save"></i> Save Banner</button>
+  </form>
+</div>
+{% endblock %}

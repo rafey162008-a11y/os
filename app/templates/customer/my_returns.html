@@ -1,0 +1,28 @@
+{% extends "customer/base.html" %}
+{% block title %}My Returns - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title">My Return Requests</h2>
+  {% if returns %}
+  <div class="card" style="padding:0">
+    <table class="table">
+      <thead><tr><th>Request #</th><th>Order</th><th>Reason</th><th>Status</th><th>Requested</th></tr></thead>
+      <tbody>
+      {% for r in returns %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.order.order_number if r.order else 'N/A' }}</td>
+          <td>{{ r.reason }}</td>
+          <td>{{ status_badge(r.status) }}</td>
+          <td>{{ r.requested_at.strftime('%b %d, %Y') }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="alert alert-info">You have no return requests.</div>
+  {% endif %}
+</div>
+{% endblock %}

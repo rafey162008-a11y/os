@@ -1,0 +1,17 @@
+{% extends "customer/base.html" %}
+{% block title %}Brands - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title">Shop by Brand</h2>
+  <p class="section-sub">Explore products from your favorite brands</p>
+  <div class="product-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+    {% for b in brands %}
+    <a href="{{ url_for('main.brand_detail', slug=b.slug) }}" class="card" style="padding:30px;text-align:center;font-weight:700;font-size:1.1rem">
+      {{ b.name }}
+      {% if b.description %}<p class="text-muted" style="font-weight:400;font-size:.85rem">{{ b.description|truncate(60) }}</p>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

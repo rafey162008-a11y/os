@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block title %}Variants - {{ product.name }}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-collection"></i> Variants for {{ product.name }}</h2>
+    <a href="{{ url_for('admin.products') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+
+  <div class="row">
+    <div class="col-md-5">
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Add Variant</h4></div>
+        <form method="POST">
+          {{ form.csrf_token }}
+          <div class="mb-3">{{ form.name.label(class="form-label") }} {{ form.name(class="form-control") }}</div>
+          <div class="mb-3">{{ form.sku.label(class="form-label") }} {{ form.sku(class="form-control") }}</div>
+          <div class="row">
+            <div class="col-6 mb-3">{{ form.price.label(class="form-label") }} {{ form.price(class="form-control") }}</div>
+            <div class="col-6 mb-3">{{ form.stock_quantity.label(class="form-label") }} {{ form.stock_quantity(class="form-control") }}</div>
+          </div>
+          <div class="mb-3">{{ form.attributes.label(class="form-label") }} {{ form.attributes(class="form-control", placeholder='{"color":"Red"}') }}</div>
+          {{ form.submit(class="btn btn-primary") }}
+        </form>
+      </div>
+    </div>
+    <div class="col-md-7">
+      <table class="admin-table">
+        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th></th></tr></thead>
+        <tbody>
+          {% for v in product.variants %}
+          <tr>
+            <td>{{ v.name }}</td>
+            <td>{{ v.sku or '-' }}</td>
+            <td>{{ money(v.price) }}</td>
+            <td>{{ v.stock_quantity }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('admin.product_variant_delete', product_id=product.id, variant_id=v.id) }}">
+                <button class="btn btn-sm btn-danger" onclick="return confirm('Delete variant?')"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="text-center text-muted">No variants.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

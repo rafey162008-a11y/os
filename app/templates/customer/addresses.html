@@ -1,0 +1,38 @@
+{% extends "customer/base.html" %}
+{% block title %}My Addresses - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <div class="d-flex justify-between align-center mb-3">
+    <h2 class="section-title" style="margin:0">My Addresses</h2>
+    <a href="{{ url_for('customer.address_add') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add Address</a>
+  </div>
+
+  {% if addresses %}
+  <div class="product-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+    {% for a in addresses %}
+    <div class="card" style="padding:18px">
+      <div class="d-flex justify-between">
+        <strong>{{ a.label }}</strong>
+        {% if a.is_default %}<span class="badge bg-success">Default</span>{% endif %}
+      </div>
+      <p style="margin:8px 0;white-space:pre-line">{{ a.full_name if a.full_name else current_user.full_name }}
+{{ a.street_address }}
+{{ a.area }}, {{ a.city }}
+{{ a.province }}, {{ a.country }} {{ a.postal_code }}
+{{ a.phone }}</p>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('customer.address_edit', addr_id=a.id) }}" class="btn btn-outline btn-sm">Edit</a>
+        <form method="post" action="{{ url_for('customer.address_delete', addr_id=a.id) }}" style="display:inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline btn-sm" type="submit" onclick="return confirm('Delete this address?')">Delete</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="alert alert-info">You have no saved addresses yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

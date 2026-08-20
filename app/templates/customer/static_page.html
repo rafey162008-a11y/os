@@ -1,0 +1,14 @@
+{% extends "customer/base.html" %}
+{% block title %}{{ content.title }} - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container section" style="max-width:900px">
+  <div class="breadcrumb">
+    <a href="{{ url_for('main.home') }}">Home</a> / <span>{{ content.title }}</span>
+  </div>
+  <div class="card" style="padding:32px">
+    <h1 style="margin-top:0">{{ content.title }}</h1>
+    <div style="line-height:1.8">{{ content.body|safe }}</div>
+  </div>
+</div>
+{% endblock %}

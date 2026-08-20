@@ -1,0 +1,37 @@
+{% extends "customer/base.html" %}
+{% block title %}Compare Products - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title">Compare Products</h2>
+  {% if products %}
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          {% for p in products %}
+          <th style="min-width:180px">
+            <a href="{{ url_for('products.detail', slug=p.slug) }}">{{ p.name }}</a>
+            <br><small class="text-muted">{{ money(p.price) }}</small>
+          </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Image</strong></td>{% for p in products %}<td><img src="{{ product_image_url(p.main_image) }}" style="width:100px;height:100px;object-fit:cover;border-radius:8px"></td>{% endfor %}</tr>
+        <tr><td><strong>Brand</strong></td>{% for p in products %}<td>{{ p.brand.name if p.brand else '-' }}</td>{% endfor %}</tr>
+        <tr><td><strong>Price</strong></td>{% for p in products %}<td>{{ money(p.price) }}{% if p.old_price and p.old_price > p.price %} <s class="text-muted">{{ money(p.old_price) }}</s>{% endif %}</td>{% endfor %}</tr>
+        <tr><td><strong>Rating</strong></td>{% for p in products %}<td>{{ '★' * p.rating_avg|round|int }}{{ '☆' * (5 - p.rating_avg|round|int) }} ({{ review_count(p) }})</td>{% endfor %}</tr>
+        <tr><td><strong>Stock</strong></td>{% for p in products %}<td>{% if p.in_stock %}<span class="badge bg-success">In Stock</span>{% else %}<span class="badge bg-danger">Out</span>{% endif %}</td>{% endfor %}</tr>
+        <tr><td><strong>Condition</strong></td>{% for p in products %}<td>{{ p.condition.title() }}</td>{% endfor %}</tr>
+        <tr><td><strong>Warranty</strong></td>{% for p in products %}<td>{{ p.warranty_info or '-' }}</td>{% endfor %}</tr>
+        <tr><td></td>{% for p in products %}<td><a href="{{ url_for('products.detail', slug=p.slug) }}" class="btn btn-primary btn-sm">View</a></td>{% endfor %}</tr>
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="alert alert-info">No products selected to compare. Add products from the product page.</div>
+  {% endif %}
+</div>
+{% endblock %}

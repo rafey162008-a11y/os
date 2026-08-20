@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}Customer Report{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-people"></i> Customer Report</h2>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin.report_customers', format='csv') }}" class="btn btn-light"><i class="bi bi-filetype-csv"></i> CSV</a>
+      <a href="{{ url_for('admin.report_customers', format='excel') }}" class="btn btn-light"><i class="bi bi-filetype-xlsx"></i> Excel</a>
+      <a href="{{ url_for('admin.report_customers', format='pdf') }}" class="btn btn-light"><i class="bi bi-filetype-pdf"></i> PDF</a>
+    </div>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Orders</th><th>Total Spent</th></tr></thead>
+    <tbody>
+      {% for c, cnt, spent in customers %}
+      <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.full_name }}</td>
+        <td>{{ c.email }}</td>
+        <td>{{ cnt }}</td>
+        <td>{{ money(spent) }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-muted">No customers.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

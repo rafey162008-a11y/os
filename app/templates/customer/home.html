@@ -1,0 +1,132 @@
+{% extends "customer/base.html" %}
+{% from "customer/macros.html" import product_card %}
+{% block title %}{{ store_name }} - Online Shopping{% endblock %}
+
+{% block content %}
+<div class="container-wide">
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Welcome to {{ store_name }}</h1>
+    <p>Discover thousands of quality products at unbeatable prices. Shop the latest trends with fast, reliable delivery.</p>
+    <a href="{{ url_for('products.browse') }}" class="btn btn-warning btn-lg">Start Shopping <i class="bi bi-arrow-right"></i></a>
+  </section>
+
+  <!-- Featured -->
+  {% if featured %}
+  <section class="section">
+    <h2 class="section-title">Featured Products</h2>
+    <p class="section-sub">Hand-picked products we love</p>
+    <div class="product-grid">
+      {% for p in featured %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Categories -->
+  {% if popular_cats %}
+  <section class="section">
+    <h2 class="section-title">Shop by Category</h2>
+    <div class="product-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+      {% for c in popular_cats %}
+      <a href="{{ url_for('products.category', slug=c.slug) }}" class="card" style="padding:24px;text-align:center">
+        <i class="bi bi-collection" style="font-size:2rem;color:var(--primary)"></i>
+        <h4 style="margin:10px 0 0">{{ c.name }}</h4>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Flash Sale -->
+  {% if flash_sale %}
+  <section class="section">
+    <h2 class="section-title"><i class="bi bi-lightning text-warning"></i> Flash Sale</h2>
+    <p class="section-sub">Limited time offers - grab them before they're gone</p>
+    <div class="product-grid">
+      {% for p in flash_sale %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- New Arrivals -->
+  {% if new_arrivals %}
+  <section class="section">
+    <h2 class="section-title">New Arrivals</h2>
+    <div class="product-grid">
+      {% for p in new_arrivals %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Best Sellers -->
+  {% if best_sellers %}
+  <section class="section">
+    <h2 class="section-title">Best Sellers</h2>
+    <div class="product-grid">
+      {% for p in best_sellers %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Discounted -->
+  {% if discounted %}
+  <section class="section">
+    <h2 class="section-title">On Sale</h2>
+    <div class="product-grid">
+      {% for p in discounted %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Recommended -->
+  {% if recommended %}
+  <section class="section">
+    <h2 class="section-title">Recommended For You</h2>
+    <div class="product-grid">
+      {% for p in recommended %}{{ product_card(p) }}{% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Brands -->
+  {% if popular_brands %}
+  <section class="section">
+    <h2 class="section-title">Popular Brands</h2>
+    <div class="row" style="justify:center">
+      {% for b in popular_brands %}
+      <a href="{{ url_for('main.brand_detail', slug=b.slug) }}" class="card" style="padding:16px 28px;font-weight:700">{{ b.name }}</a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Testimonials -->
+  {% if testimonials %}
+  <section class="section">
+    <h2 class="section-title">What Our Customers Say</h2>
+    <div class="product-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+      {% for t in testimonials %}
+      <div class="card" style="padding:20px">
+        <div class="stars">{% for i in range(5) %}<i class="bi bi-star{{ '-fill' if i < t.rating else '' }}"></i>{% endfor %}</div>
+        <p style="margin:10px 0">"{{ t.comment or 'Great product and service!' }}"</p>
+        <small class="text-muted">— {{ t.customer.full_name if t.customer else 'Customer' }}</small>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Newsletter -->
+  <section class="section">
+    <div class="card" style="padding:30px;text-align:center;background:linear-gradient(120deg,var(--primary),var(--secondary));color:#fff">
+      <h3>Subscribe to our Newsletter</h3>
+      <p>Get the latest deals and offers straight to your inbox.</p>
+      <form method="post" action="{{ url_for('main.newsletter') }}" class="search-bar" style="max-width:420px;margin:0 auto">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {{ newsletter_form.email(class="form-control", placeholder="Your email") }}
+        <button class="btn btn-warning" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}

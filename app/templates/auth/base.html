@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ store_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="auth-wrapper" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(120deg,var(--primary),var(--secondary));padding:20px">
+    <div class="auth-card" style="background:#fff;border-radius:var(--radius);box-shadow:0 10px 40px rgba(0,0,0,.2);max-width:440px;width:100%;padding:36px">
+      <div class="text-center mb-3">
+        <a href="{{ url_for('main.home') }}" class="brand-logo" style="justify-content:center;font-size:1.8rem"><i class="bi bi-bag-heart-fill"></i> Shop<span>Sphere</span></a>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="alert alert-{{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block auth_content %}{% endblock %}
+    </div>
+  </div>
+</body>
+</html>

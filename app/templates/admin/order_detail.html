@@ -1,0 +1,96 @@
+{% extends "admin/base.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-receipt"></i> Order {{ order.order_number }}</h2>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin.order_invoice', order_id=order.id) }}" class="btn btn-light"><i class="bi bi-file-earmark-pdf"></i> Invoice</a>
+      <a href="{{ url_for('admin.orders') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Items</h4></div>
+        <table class="admin-table">
+          <thead><tr><th>Product</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead>
+          <tbody>
+            {% for it in order.items %}
+            <tr>
+              <td>
+                {% if it.image %}<img src="{{ product_image_url(it.image) }}" style="height:32px;width:32px;object-fit:cover;border-radius:4px;" class="me-2">{% endif %}
+                {{ it.product_name }}{% if it.variant_label %} <small class="text-muted">({{ it.variant_label }})</small>{% endif %}
+              </td>
+              <td>{{ it.quantity }}</td>
+              <td>{{ money(it.unit_price) }}</td>
+              <td>{{ money(it.line_total) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3" class="text-end">Subtotal</td><td>{{ money(order.subtotal) }}</td></tr>
+            <tr><td colspan="3" class="text-end">Discount</td><td>-{{ money(order.discount) }}</td></tr>
+            <tr><td colspan="3" class="text-end">Tax</td><td>{{ money(order.tax) }}</td></tr>
+            <tr><td colspan="3" class="text-end">Shipping</td><td>{{ money(order.shipping_charge) }}</td></tr>
+            <tr><td colspan="3" class="text-end"><strong>Grand Total</strong></td><td><strong>{{ money(order.grand_total) }}</strong></td></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      {% if order.shipment %}
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Shipment</h4></div>
+        <p><strong>Tracking:</strong> {{ order.shipment.tracking_number }}</p>
+        <p><strong>Company:</strong> {{ order.shipment.shipping_company }}</p>
+        <p><strong>Status:</strong> {{ order.shipment.delivery_status }}</p>
+        <p><strong>Expected:</strong> {{ order.shipment.expected_delivery or '-' }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="col-md-4">
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Update Status</h4></div>
+        <form method="POST" action="{{ url_for('admin.order_update_status', order_id=order.id) }}">
+          <div class="mb-2">
+            <select name="status" class="form-select">
+              {% for k, v in order_statuses %}
+              <option value="{{ k }}" {{ 'selected' if order.status == k }}>{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-2"><input type="text" name="note" class="form-control" placeholder="Note (optional)"></div>
+          <button class="btn btn-primary w-100">Update</button>
+        </form>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Customer</h4></div>
+        <p><strong>{{ order.customer_name }}</strong></p>
+        <p class="text-muted">{{ order.shipping_address or '' }}</p>
+        <p><strong>Payment:</strong> {{ order.payments.first().method_display if order.payments.first() else '-' }} ({{ order.payment_status }})</p>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Delivery</h4></div>
+        <form method="POST" action="{{ url_for('admin.delivery_update', order_id=order.id) }}">
+          <div class="mb-2">
+            <select name="delivery_status" class="form-select">
+              {% for k, v in delivery_statuses %}
+              <option value="{{ k }}" {{ 'selected' if order.shipment and order.shipment.delivery_status == k }}>{{ v }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-2"><input type="text" name="tracking_number" class="form-control" placeholder="Tracking #" value="{{ order.shipment.tracking_number if order.shipment else '' }}"></div>
+          <div class="mb-2"><input type="text" name="shipping_company" class="form-control" placeholder="Company" value="{{ order.shipment.shipping_company if order.shipment else '' }}"></div>
+          <div class="mb-2"><input type="date" name="expected_delivery" class="form-control" value="{{ order.shipment.expected_delivery if order.shipment and order.shipment.expected_delivery else '' }}"></div>
+          <div class="mb-2"><input type="text" name="delivery_notes" class="form-control" placeholder="Notes" value="{{ order.shipment.delivery_notes if order.shipment else '' }}"></div>
+          <button class="btn btn-primary w-100">Update Delivery</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "customer/base.html" %}
+{% block title %}My Reviews - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title">My Reviews</h2>
+  {% if reviews %}
+  {% for r in reviews %}
+  <div class="card mb-3" style="padding:18px">
+    <div class="d-flex justify-between">
+      <div>
+        <strong>{{ r.product_name }}</strong>
+        <div class="stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</div>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('reviews.edit_review', review_id=r.id) }}" class="btn btn-outline btn-sm">Edit</a>
+        <form method="post" action="{{ url_for('customer.review_delete', review_id=r.id) }}" style="display:inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline btn-sm" type="submit" onclick="return confirm('Delete this review?')">Delete</button>
+        </form>
+      </div>
+    </div>
+    {% if r.title %}<h5 style="margin:8px 0">{{ r.title }}</h5>{% endif %}
+    <p style="margin:0">{{ r.comment }}</p>
+    <small class="text-muted">{{ status_badge(r.status) }} · {{ r.created_at.strftime('%b %d, %Y') }}</small>
+  </div>
+  {% endfor %}
+  {% else %}
+    <div class="alert alert-info">You haven't written any reviews yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

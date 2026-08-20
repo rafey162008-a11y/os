@@ -1,0 +1,45 @@
+{% extends "customer/base.html" %}
+{% block title %}Help Center - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container section" style="max-width:800px">
+  <h2 class="section-title text-center">Help Center</h2>
+  <p class="text-center text-muted">Find answers to common questions or contact our support team.</p>
+
+  <div class="row mt-4">
+    <div class="col card" style="padding:24px;text-align:center">
+      <i class="bi bi-question-circle" style="font-size:2.5rem;color:var(--primary)"></i>
+      <h4 class="mt-2">FAQ</h4>
+      <p class="text-muted">Answers to frequently asked questions.</p>
+      <a href="{{ url_for('main.faq') }}" class="btn btn-outline btn-sm">Browse FAQ</a>
+    </div>
+    <div class="col card" style="padding:24px;text-align:center">
+      <i class="bi bi-life-preserver" style="font-size:2.5rem;color:var(--primary)"></i>
+      <h4 class="mt-2">Submit a Ticket</h4>
+      <p class="text-muted">Need personal help? Open a support ticket.</p>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('support.new_ticket') }}" class="btn btn-primary btn-sm">New Ticket</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">Login to Submit</a>
+      {% endif %}
+    </div>
+    <div class="col card" style="padding:24px;text-align:center">
+      <i class="bi bi-envelope" style="font-size:2.5rem;color:var(--primary)"></i>
+      <h4 class="mt-2">Contact Us</h4>
+      <p class="text-muted">Reach out via our contact form.</p>
+      <a href="{{ url_for('main.contact') }}" class="btn btn-outline btn-sm">Contact</a>
+    </div>
+  </div>
+
+  <div class="card mt-4" style="padding:24px">
+    <h4>Popular Topics</h4>
+    <ul>
+      <li><a href="{{ url_for('main.page', slug='shipping') }}">Shipping & Delivery</a></li>
+      <li><a href="{{ url_for('main.page', slug='returns') }}">Returns & Refunds</a></li>
+      <li><a href="{{ url_for('main.page', slug='payment') }}">Payment Methods</a></li>
+      <li><a href="{{ url_for('main.page', slug='privacy') }}">Privacy Policy</a></li>
+      <li><a href="{{ url_for('main.page', slug='terms') }}">Terms of Service</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

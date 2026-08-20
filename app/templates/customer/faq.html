@@ -1,0 +1,40 @@
+{% extends "customer/base.html" %}
+{% block title %}FAQ - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container section" style="max-width:800px">
+  <h2 class="section-title text-center">Frequently Asked Questions</h2>
+
+  <div class="card mt-4" style="padding:24px">
+    <div class="faq-item mb-3">
+      <h5><i class="bi bi-chevron-right text-primary"></i> How do I place an order?</h5>
+      <p class="text-muted">Browse products, add them to your cart, and proceed to checkout. You can pay via cash on delivery or card.</p>
+    </div>
+    <div class="divider"></div>
+    <div class="faq-item mb-3">
+      <h5><i class="bi bi-chevron-right text-primary"></i> What payment methods do you accept?</h5>
+      <p class="text-muted">We accept Cash on Delivery, Credit/Debit Cards, and Bank Transfer.</p>
+    </div>
+    <div class="divider"></div>
+    <div class="faq-item mb-3">
+      <h5><i class="bi bi-chevron-right text-primary"></i> How can I track my order?</h5>
+      <p class="text-muted">Use the "Track Order" feature and enter your order number, or view it in your account under "My Orders".</p>
+    </div>
+    <div class="divider"></div>
+    <div class="faq-item mb-3">
+      <h5><i class="bi bi-chevron-right text-primary"></i> What is your return policy?</h5>
+      <p class="text-muted">You can request a return within 7 days of delivery for eligible products. Go to "My Orders" and click "Return".</p>
+    </div>
+    <div class="divider"></div>
+    <div class="faq-item mb-3">
+      <h5><i class="bi bi-chevron-right text-primary"></i> How long does shipping take?</h5>
+      <p class="text-muted">Standard shipping takes 3-5 business days. Express shipping takes 1-2 business days.</p>
+    </div>
+    <div class="divider"></div>
+    <div class="faq-item">
+      <h5><i class="bi bi-chevron-right text-primary"></i> Need more help?</h5>
+      <p class="text-muted">Visit our <a href="{{ url_for('support.help_center') }}">Help Center</a> or <a href="{{ url_for('main.contact') }}">contact us</a>.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

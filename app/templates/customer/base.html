@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ store_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+  <!-- Top navbar -->
+  <nav class="navbar">
+    <div class="container-wide nav-inner">
+      <a href="{{ url_for('main.home') }}" class="brand-logo"><i class="bi bi-bag-heart-fill"></i> Shop<span>Sphere</span></a>
+      <form class="search-bar" action="{{ url_for('products.search') }}" method="get">
+        <input type="text" name="q" placeholder="Search products, brands, SKU..." value="{{ search_query }}">
+        <button type="submit"><i class="bi bi-search"></i></button>
+      </form>
+      <div class="nav-links">
+        <a href="{{ url_for('products.browse') }}"><i class="bi bi-grid"></i> Shop</a>
+        <a href="{{ url_for('main.offers') }}"><i class="bi bi-tag"></i> Offers</a>
+        <a href="{{ url_for('main.flash_sale') }}"><i class="bi bi-lightning"></i> Flash Sale</a>
+        {% if current_user.is_authenticated %}
+          {% if current_user.is_staff %}
+            <a href="{{ url_for('admin.dashboard') }}"><i class="bi bi-speedometer2"></i> Admin</a>
+          {% else %}
+            <a href="{{ url_for('customer.dashboard') }}"><i class="bi bi-person-circle"></i> Account</a>
+            <a href="{{ url_for('customer.wishlist') }}"><i class="bi bi-heart"></i></a>
+          {% endif %}
+          <a href="{{ url_for('cart.view_cart') }}"><i class="bi bi-cart3"></i><span class="cart-badge">{{ cart_count() }}</span></a>
+          <a href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right"></i></a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}"><i class="bi bi-person"></i> Login</a>
+          <a href="{{ url_for('auth.register') }}">Register</a>
+          <a href="{{ url_for('cart.view_cart') }}"><i class="bi bi-cart3"></i><span class="cart-badge">{{ cart_count() }}</span></a>
+        {% endif %}
+      </div>
+    </div>
+    <!-- Category nav -->
+    <div class="cat-nav">
+      <div class="container-wide cat-inner">
+        <a href="{{ url_for('products.browse') }}">All Products</a>
+        {% for c in categories %}
+          <a href="{{ url_for('products.category', slug=c.slug) }}">{{ c.name }}</a>
+        {% endfor %}
+        <a href="{{ url_for('main.brands') }}">Brands</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash messages -->
+  <div class="container-wide" style="margin-top:12px">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Page content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container-wide">
+      <div class="footer-grid">
+        <div>
+          <h5>ShopSphere</h5>
+          <p>Your one-stop online shopping destination. Quality products, fast delivery, great prices.</p>
+        </div>
+        <div>
+          <h5>Shop</h5>
+          <p><a href="{{ url_for('products.browse') }}">All Products</a></p>
+          <p><a href="{{ url_for('main.offers') }}">Offers</a></p>
+          <p><a href="{{ url_for('main.flash_sale') }}">Flash Sale</a></p>
+          <p><a href="{{ url_for('main.brands') }}">Brands</a></p>
+        </div>
+        <div>
+          <h5>Account</h5>
+          {% if current_user.is_authenticated %}
+            <p><a href="{{ url_for('customer.dashboard') }}">My Account</a></p>
+            <p><a href="{{ url_for('customer.my_orders') }}">My Orders</a></p>
+            <p><a href="{{ url_for('customer.wishlist') }}">Wishlist</a></p>
+          {% else %}
+            <p><a href="{{ url_for('auth.login') }}">Login</a></p>
+            <p><a href="{{ url_for('auth.register') }}">Register</a></p>
+          {% endif %}
+        </div>
+        <div>
+          <h5>Support</h5>
+          <p><a href="{{ url_for('main.contact') }}">Contact Us</a></p>
+          <p><a href="{{ url_for('main.faq') }}">FAQ</a></p>
+          <p><a href="{{ url_for('support.help_center') }}">Help Center</a></p>
+          <p><a href="{{ url_for('support.new_ticket') }}">Submit Ticket</a></p>
+        </div>
+        <div>
+          <h5>Company</h5>
+          <p><a href="{{ url_for('main.page', slug='about') }}">About Us</a></p>
+          <p><a href="{{ url_for('main.page', slug='terms') }}">Terms</a></p>
+          <p><a href="{{ url_for('main.page', slug='privacy') }}">Privacy Policy</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; {{ now.year if now else 2024 }} ShopSphere. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

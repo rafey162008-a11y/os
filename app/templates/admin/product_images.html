@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block title %}Product Images - {{ product.name }}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-images"></i> Images for {{ product.name }}</h2>
+    <a href="{{ url_for('admin.products') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+
+  <div class="row mb-4">
+    {% for img in product.images %}
+    <div class="col-6 col-md-3 mb-3">
+      <div class="card">
+        <img src="{{ product_image_url(img.image) }}" class="card-img-top" style="height:140px;object-fit:cover;">
+        <div class="card-body p-2 d-flex justify-content-between align-items-center">
+          <small class="text-muted">#{{ img.display_order + 1 }}</small>
+          <form method="POST" action="{{ url_for('admin.product_image_delete', product_id=product.id, image_id=img.id) }}">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this image?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="col-12"><div class="alert alert-info">No extra images yet.</div></div>
+    {% endfor %}
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h4>Upload Images</h4></div>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <input type="file" name="images" multiple class="form-control" accept="image/*" required>
+      </div>
+      <button class="btn btn-primary"><i class="bi bi-upload"></i> Upload</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

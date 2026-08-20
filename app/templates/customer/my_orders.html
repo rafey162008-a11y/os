@@ -1,0 +1,41 @@
+{% extends "customer/base.html" %}
+{% block title %}My Orders - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <h2 class="section-title">My Orders</h2>
+
+  <div class="d-flex gap-2 mb-3 flex-wrap">
+    <a href="{{ url_for('customer.my_orders') }}" class="btn btn-sm {{ 'btn-primary' if not current_status else 'btn-outline' }}">All</a>
+    {% for s in ['pending','processing','shipped','delivered','cancelled','returned'] %}
+      <a href="{{ url_for('customer.my_orders', status=s) }}" class="btn btn-sm {{ 'btn-primary' if current_status == s else 'btn-outline' }}">{{ s.title() }}</a>
+    {% endfor %}
+  </div>
+
+  {% if orders %}
+  <div class="card" style="padding:0">
+    <table class="table">
+      <thead><tr><th>Order #</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th>Payment</th><th></th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+        <tr>
+          <td>{{ o.order_number }}</td>
+          <td>{{ o.placed_at.strftime('%b %d, %Y') }}</td>
+          <td>{{ o.items|length }}</td>
+          <td>{{ money(o.grand_total) }}</td>
+          <td>{{ status_badge(o.status) }}</td>
+          <td>{{ status_badge(o.payment_status) }}</td>
+          <td>
+            <a href="{{ url_for('orders.order_detail', order_id=o.id) }}" class="btn btn-outline btn-sm">View</a>
+            {% if o.can_request_return %}<a href="{{ url_for('customer.return_request', order_id=o.id) }}" class="btn btn-outline btn-sm">Return</a>{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="alert alert-info">You have no orders{% if current_status %} with status "{{ current_status }}"{% endif %}.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block title %}Suppliers{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-truck"></i> Suppliers</h2>
+    <a href="{{ url_for('admin.supplier_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Supplier</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Phone</th><th>Total Purchased</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for s in suppliers %}
+      <tr>
+        <td><strong>{{ s.name }}</strong></td>
+        <td>{{ s.company or '-' }}</td>
+        <td>{{ s.email or '-' }}</td>
+        <td>{{ s.phone or '-' }}</td>
+        <td>{{ money(s.total_purchases) }}</td>
+        <td><span class="badge bg-{{ 'success' if s.status == 'active' else 'secondary' }}">{{ s.status }}</span></td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.supplier_edit', supplier_id=s.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+          <form method="POST" action="{{ url_for('admin.supplier_delete', supplier_id=s.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete supplier?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No suppliers.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

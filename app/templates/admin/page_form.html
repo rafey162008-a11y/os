@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if page %}Edit Page{% else %}New Page{% endif %}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-file-earmark-text"></i> {% if page %}Edit {{ page.title }}{% else %}New Page{% endif %}</h2>
+    <a href="{{ url_for('admin.pages') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <form method="POST" class="admin-form">
+    <div class="mb-3"><label class="form-label">Title</label><input type="text" name="title" class="form-control" value="{{ page.title if page else '' }}" required></div>
+    {% if not page %}
+    <div class="mb-3"><label class="form-label">Slug (optional, auto-generated)</label><input type="text" name="slug" class="form-control" placeholder="about-us"></div>
+    {% endif %}
+    <div class="mb-3"><label class="form-label">Content (HTML allowed)</label><textarea name="content" class="form-control" rows="12">{{ page.content if page else '' }}</textarea></div>
+    <button class="btn btn-primary"><i class="bi bi-save"></i> Save Page</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+{% block title %}Customer {{ user.full_name }}{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-person"></i> {{ user.full_name }}</h2>
+    <a href="{{ url_for('admin.customers') }}" class="btn btn-light"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Profile</h4></div>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Phone:</strong> {{ user.phone or '-' }}</p>
+        <p><strong>Status:</strong> <span class="badge bg-{{ 'success' if user.is_active else 'danger' }}">{{ 'Active' if user.is_active else 'Blocked' }}</span></p>
+        <p><strong>Verified:</strong> {{ 'Yes' if user.is_verified else 'No' }}</p>
+        <p><strong>Joined:</strong> {{ user.created_at.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Loyalty Points:</strong> {{ user.loyalty_balance }}</p>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Orders ({{ user.orders.count() }})</h4></div>
+        <table class="admin-table">
+          <thead><tr><th>Order #</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for o in user.orders.all()[:20] %}
+            <tr>
+              <td><a href="{{ url_for('admin.order_detail', order_id=o.id) }}">{{ o.order_number }}</a></td>
+              <td>{{ o.placed_at.strftime('%Y-%m-%d') }}</td>
+              <td>{{ money(o.grand_total) }}</td>
+              <td><span class="badge bg-info">{{ o.status }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-muted">No orders.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="admin-panel">
+        <div class="admin-panel-head"><h4>Addresses</h4></div>
+        {% for a in user.addresses.all() %}
+        <div class="border rounded p-2 mb-2">
+          <strong>{{ a.full_name }}</strong> {% if a.is_default %}<span class="badge bg-primary">Default</span>{% endif %}<br>
+          {{ a.address_line1 }}{% if a.address_line2 %}, {{ a.address_line2 }}{% endif %}<br>
+          {{ a.city }}, {{ a.state }} {{ a.postal_code }}, {{ a.country }}<br>
+          <small class="text-muted">{{ a.phone }}</small>
+        </div>
+        {% else %}
+        <p class="text-muted">No addresses.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% set p = pagination or products or orders or payments or deliveries or returns or reviews or customers or notifications or tickets or refunds or movements or logs or purchases %}
+{% if p and p.pages > 1 %}
+{% set args = request.args.to_dict() %}
+<nav aria-label="Page navigation" class="admin-pagination">
+  <ul class="pagination">
+    {% if p.has_prev %}
+    <li class="page-item"><a class="page-link" href="{{ url_for(request.endpoint, **request.view_args) }}?page={{ p.prev_num }}{% for k, v in args.items() %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}">Previous</a></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+    {% endif %}
+    {% for pg in p.iter_pages() %}
+      {% if pg %}
+        {% if pg == p.page %}
+        <li class="page-item active"><span class="page-link">{{ pg }}</span></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="{{ url_for(request.endpoint, **request.view_args) }}?page={{ pg }}{% for k, v in args.items() %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}">{{ pg }}</a></li>
+        {% endif %}
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+    {% if p.has_next %}
+    <li class="page-item"><a class="page-link" href="{{ url_for(request.endpoint, **request.view_args) }}?page={{ p.next_num }}{% for k, v in args.items() %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}">Next</a></li>
+    {% else %}
+    <li class="page-item disabled"><span class="page-link">Next</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}

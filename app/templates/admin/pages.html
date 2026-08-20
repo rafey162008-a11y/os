@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+{% block title %}Pages{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-file-earmark-text"></i> Static Pages</h2>
+    <a href="{{ url_for('admin.page_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Page</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Slug</th><th>Updated</th><th></th></tr></thead>
+    <tbody>
+      {% for p in pages %}
+      <tr>
+        <td><strong>{{ p.title }}</strong></td>
+        <td><a href="{{ url_for('main.page', slug=p.slug) }}" target="_blank">/page/{{ p.slug }}</a></td>
+        <td>{{ p.updated_at.strftime('%Y-%m-%d') if p.updated_at else '-' }}</td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.page_edit', page_id=p.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+          <form method="POST" action="{{ url_for('admin.page_delete', page_id=p.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete page?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="text-center text-muted">No pages.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

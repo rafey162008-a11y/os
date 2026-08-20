@@ -1,0 +1,47 @@
+{% extends "customer/base.html" %}
+{% block title %}Track Order - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container section" style="max-width:800px">
+  <h2 class="section-title">Track Your Order</h2>
+  <form method="get" action="{{ url_for('orders.track') }}" class="d-flex gap-2 mb-4">
+    <input type="text" name="order_number" class="form-control" value="{{ order_number }}" placeholder="Enter your order number (e.g. ORD-20240101-ABC123)" style="text-transform:uppercase">
+    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Track</button>
+  </form>
+
+  {% if order_number and not order %}
+    <div class="alert alert-warning">No order found with number "{{ order_number }}". Please check and try again.</div>
+  {% endif %}
+
+  {% if order %}
+  <div class="card" style="padding:24px">
+    <div class="d-flex justify-between align-center mb-3">
+      <h4 style="margin:0">Order {{ order.order_number }}</h4>
+      {{ status_badge(order.status) }}
+    </div>
+    <p><strong>Placed:</strong> {{ order.placed_at.strftime('%b %d, %Y %H:%M') }}</p>
+    <p><strong>Customer:</strong> {{ order.customer.full_name if order.customer else 'N/A' }}</p>
+    <p><strong>Total:</strong> {{ money(order.grand_total) }}</p>
+
+    {% if order.shipment %}
+    <div class="divider"></div>
+    <h5>Delivery Status</h5>
+    <p><strong>Tracking #:</strong> {{ order.shipment.tracking_number }}</p>
+    <p><strong>Carrier:</strong> {{ order.shipment.shipping_company }}</p>
+    {{ status_badge(order.shipment.delivery_status) }}
+    {% endif %}
+
+    <div class="divider"></div>
+    <h5>Items</h5>
+    <table class="table">
+      <thead><tr><th>Product</th><th>Qty</th><th>Total</th></tr></thead>
+      <tbody>
+      {% for item in order.items %}
+        <tr><td>{{ item.product_name }}</td><td>{{ item.quantity }}</td><td>{{ money(item.line_total) }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

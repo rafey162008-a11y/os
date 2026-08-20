@@ -1,0 +1,37 @@
+{% extends "customer/base.html" %}
+{% block title %}Notifications - {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="container-wide section">
+  <div class="d-flex justify-between align-center mb-3">
+    <h2 class="section-title" style="margin:0">Notifications</h2>
+    <form method="post" action="{{ url_for('customer.notifications_read_all') }}" style="display:inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-outline btn-sm" type="submit">Mark All Read</button>
+    </form>
+  </div>
+
+  {% if notifications %}
+  {% for n in notifications %}
+  <div class="card mb-2" style="padding:16px;{{ 'opacity:.6' if n.is_read else '' }}">
+    <div class="d-flex gap-2 align-center">
+      <i class="bi bi-bell {{ 'text-primary' if not n.is_read else 'text-muted' }}"></i>
+      <div style="flex:1">
+        <strong>{{ n.title }}</strong>
+        <p style="margin:2px 0 0">{{ n.message }}</p>
+        <small class="text-muted">{{ n.created_at.strftime('%b %d, %Y %H:%M') }}</small>
+      </div>
+      {% if not n.is_read %}
+      <form method="post" action="{{ url_for('customer.notification_read', notif_id=n.id) }}" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-outline btn-sm" type="submit">Mark Read</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+    <div class="alert alert-info">No notifications.</div>
+  {% endif %}
+</div>
+{% endblock %}

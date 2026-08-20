@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-receipt"></i> Orders</h2>
+  </div>
+  <form method="GET" class="admin-toolbar">
+    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search order #...">
+    <select name="status" class="form-select" style="max-width:200px;">
+      <option value="">All Statuses</option>
+      {% for k, v in order_statuses %}
+      <option value="{{ k }}" {{ 'selected' if status == k }}>{{ v }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+  </form>
+  <table class="admin-table">
+    <thead><tr><th>Order #</th><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for o in orders.items %}
+      <tr>
+        <td><a href="{{ url_for('admin.order_detail', order_id=o.id) }}">{{ o.order_number }}</a></td>
+        <td>{{ o.placed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ o.customer_name }}</td>
+        <td>{{ o.item_count }}</td>
+        <td>{{ money(o.grand_total) }}</td>
+        <td><span class="badge bg-{{ 'success' if o.payment_status == 'paid' else ('warning' if o.payment_status == 'pending' else 'danger') }}">{{ o.payment_status }}</span></td>
+        <td><span class="badge bg-info">{{ o.status }}</span></td>
+        <td class="text-end"><a href="{{ url_for('admin.order_detail', order_id=o.id) }}" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted">No orders.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

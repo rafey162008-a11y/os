@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Banners{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-card-image"></i> Banners</h2>
+    <a href="{{ url_for('admin.banner_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Banner</a>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Image</th><th>Title</th><th>Position</th><th>Order</th><th>Active</th><th></th></tr></thead>
+    <tbody>
+      {% for b in banners %}
+      <tr>
+        <td>{% if b.image %}<img src="{{ product_image_url(b.image) }}" style="height:40px;width:80px;object-fit:cover;border-radius:6px;">{% else %}-{% endif %}</td>
+        <td><strong>{{ b.title or '-' }}</strong><br><small class="text-muted">{{ b.subtitle or '' }}</small></td>
+        <td>{{ b.position }}</td>
+        <td>{{ b.display_order }}</td>
+        <td><span class="badge bg-{{ 'success' if b.active else 'secondary' }}">{{ b.active }}</span></td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.banner_edit', banner_id=b.id) }}" class="btn btn-sm btn-light"><i class="bi bi-pencil"></i></a>
+          <form method="POST" action="{{ url_for('admin.banner_delete', banner_id=b.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete banner?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted">No banners.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

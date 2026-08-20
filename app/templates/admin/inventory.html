@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+{% block title %}Inventory{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-boxes"></i> Inventory</h2>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin.inventory_movements') }}" class="btn btn-light"><i class="bi bi-arrow-left-right"></i> Movements</a>
+    </div>
+  </div>
+  <form method="GET" class="admin-toolbar">
+    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search products...">
+    <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+  </form>
+  <table class="admin-table">
+    <thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Min Level</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for p in products.items %}
+      <tr>
+        <td>
+          {% if p.main_image %}<img src="{{ product_image_url(p.main_image) }}" style="height:36px;width:36px;object-fit:cover;border-radius:6px;" class="me-2">{% endif %}
+          <a href="{{ url_for('admin.product_edit', product_id=p.id) }}">{{ p.name }}</a>
+        </td>
+        <td>{{ p.sku }}</td>
+        <td><strong class="{{ 'text-danger' if p.is_out_of_stock else ('text-warning' if p.is_low_stock else '') }}">{{ p.stock_quantity }}</strong></td>
+        <td>{{ p.min_stock_level }}</td>
+        <td>
+          {% if p.is_out_of_stock %}<span class="badge bg-danger">Out of stock</span>
+          {% elif p.is_low_stock %}<span class="badge bg-warning">Low</span>
+          {% else %}<span class="badge bg-success">OK</span>{% endif %}
+        </td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.inventory_adjust', product_id=p.id) }}" class="btn btn-sm btn-primary"><i class="bi bi-sliders"></i> Adjust</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="text-center text-muted">No products.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

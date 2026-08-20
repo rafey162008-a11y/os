@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% block title %}Customers{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-people"></i> Customers</h2>
+  </div>
+  <form method="GET" class="admin-toolbar">
+    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search name or email...">
+    <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+  </form>
+  <table class="admin-table">
+    <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+    <tbody>
+      {% for u in customers.items %}
+      <tr>
+        <td><strong>{{ u.full_name }}</strong></td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.phone or '-' }}</td>
+        <td>{{ u.orders.count() }}</td>
+        <td><span class="badge bg-{{ 'success' if u.is_active else 'danger' }}">{{ 'Active' if u.is_active else 'Blocked' }}</span></td>
+        <td>{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.customer_detail', user_id=u.id) }}" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a>
+          <form method="POST" action="{{ url_for('admin.customer_toggle', user_id=u.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-warning" title="Toggle block"><i class="bi bi-slash-circle"></i></button>
+          </form>
+          <form method="POST" action="{{ url_for('admin.customer_delete', user_id=u.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete customer?')"><i class="bi bi-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No customers.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block title %}Returns{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-arrow-return-left"></i> Returns & Refunds</h2>
+  </div>
+  <form method="GET" class="admin-toolbar">
+    <select name="status" class="form-select" style="max-width:220px;">
+      <option value="">All Statuses</option>
+      {% for k, v in return_statuses %}
+      <option value="{{ k }}" {{ 'selected' if status == k }}>{{ v }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+  </form>
+  <table class="admin-table">
+    <thead><tr><th>Return #</th><th>Date</th><th>Order</th><th>Product</th><th>Reason</th><th>Refund</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for r in returns.items %}
+      <tr>
+        <td>{{ r.return_number }}</td>
+        <td>{{ r.requested_at.strftime('%Y-%m-%d') }}</td>
+        <td>{{ r.order.order_number if r.order else '-' }}</td>
+        <td>{{ r.product.name if r.product else '-' }}</td>
+        <td>{{ r.reason }}</td>
+        <td>{{ money(r.refund_amount) }}</td>
+        <td><span class="badge bg-warning">{{ r.status }}</span></td>
+        <td class="text-end"><a href="{{ url_for('admin.return_detail', return_id=r.id) }}" class="btn btn-sm btn-light"><i class="bi bi-eye"></i></a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted">No returns.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}

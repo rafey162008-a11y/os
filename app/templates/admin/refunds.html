@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+{% block title %}Refunds{% endblock %}
+{% block content %}
+<div class="admin-panel">
+  <div class="admin-panel-head">
+    <h2><i class="bi bi-cash-stack"></i> Refunds</h2>
+  </div>
+  <table class="admin-table">
+    <thead><tr><th>Refund #</th><th>Date</th><th>Return</th><th>Order</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for r in refunds.items %}
+      <tr>
+        <td>{{ r.refund_number }}</td>
+        <td>{{ r.processed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ r.return_request.return_number if r.return_request else '-' }}</td>
+        <td>{{ r.order.order_number if r.order else '-' }}</td>
+        <td>{{ money(r.amount) }}</td>
+        <td>{{ r.method }}</td>
+        <td><span class="badge bg-{{ 'success' if r.status == 'completed' else 'warning' }}">{{ r.status }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="text-center text-muted">No refunds.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "admin/_pagination.html" %}
+</div>
+{% endblock %}
