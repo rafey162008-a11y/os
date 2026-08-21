@@ -57,6 +57,18 @@ def create_app(config_class=Config):
             now=datetime.utcnow(),
         )
 
+    # Register helpers as true Jinja globals so they are always available,
+    # including inside imported macros (e.g. customer/macros.html).
+    app.add_template_global(product_image_url)
+    app.add_template_global(currency, 'currency')
+    app.add_template_global(money, 'money')
+    app.add_template_global(status_badge, 'status_badge')
+    app.add_template_global(avg_rating, 'avg_rating')
+    app.add_template_global(review_count, 'review_count')
+    app.add_template_global(settings_value, 'settings_value')
+    app.add_template_global(cart_count, 'cart_count')
+    app.add_template_global(is_staff, 'is_staff')
+
     # --- Register blueprints ---
     from app.routes.main import main_bp
     from app.routes.auth import auth_bp
