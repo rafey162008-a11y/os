@@ -29,7 +29,7 @@ def create_app(config_class=Config):
     # --- Template globals & context processors ---
     from app.utils.helpers import (
         currency, money, status_badge, avg_rating, review_count,
-        settings_value, cart_count, is_staff
+        settings_value, cart_count, is_staff, product_image_url
     )
     from app.models.content import Setting, Banner
 
@@ -50,6 +50,7 @@ def create_app(config_class=Config):
             settings_value=settings_value,
             cart_count=cart_count,
             is_staff=is_staff,
+            product_image_url=product_image_url,
             categories=cats,
             banners=banners,
             search_query=request.args.get('q', ''),
