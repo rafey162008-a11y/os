@@ -7,7 +7,9 @@ Usage:
     python seed.py
 """
 import random
+import os
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
 from app import create_app
 from app.extensions import db
@@ -15,6 +17,8 @@ from app.models.user import User, Role, Permission
 from app.models.catalog import Category, Brand, Product
 from app.models.content import Setting, Banner, PageContent
 from app.utils.constants import PERMISSIONS, USER_ROLES
+
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 
 def seed_roles():
@@ -48,17 +52,30 @@ def seed_roles():
 
 def seed_admin():
     print("Seeding admin user...")
-    if User.query.filter_by(email='admin@shopsphere.com').first():
-        print("Admin already exists, skipping.")
-        return
+    admin_email = os.environ.get('ADMIN_EMAIL', 'admin@shop.com').lower().strip()
+    admin_password = os.environ.get('ADMIN_PASSWORD', 'Admin@123')
+    admin_name = os.environ.get('ADMIN_NAME', 'Super Admin')
     admin_role = Role.query.filter_by(name='Super Admin').first()
-    admin = User(full_name='Site Administrator', email='admin@shopsphere.com',
+    admin = User.query.filter_by(email=admin_email).first()
+    if admin:
+        # Always (re)set password from .env so re-running seed resets admin access.
+        admin.set_password(admin_password)
+        admin.is_staff = True
+        admin.is_active = True
+        admin.is_verified = True
+        if admin_role and admin_role not in admin.roles:
+            admin.roles.append(admin_role)
+        db.session.commit()
+        print(f"Admin password updated for {admin_email}.")
+        return
+    admin = User(full_name=admin_name, email=admin_email,
                  phone='+1234567890', is_staff=True, is_active=True, is_verified=True)
-    admin.set_password('admin123')
+    admin.set_password(admin_password)
     if admin_role:
         admin.roles.append(admin_role)
     db.session.add(admin)
     db.session.commit()
+    print(f"Admin user created: {admin_email}")
 
 
 def seed_settings():

@@ -1,0 +1,29 @@
+{% extends "auth/base.html" %}
+{% block title %}Admin Login - {{ store_name }}{% endblock %}
+
+{% block auth_content %}
+<h3 class="text-center mb-3"><i class="bi bi-shield-lock"></i> Admin Login</h3>
+<p class="text-center text-muted mb-3">Staff access only</p>
+<form method="post" action="{{ url_for('admin.login') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-group">
+    <label>Email or Phone</label>
+    {{ form.email(class="form-control") }}
+    {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    {{ form.password(class="form-control") }}
+    {% for e in form.password.errors %}<div class="error">{{ e }}</div>{% endfor %}
+  </div>
+  <div class="form-group form-check">
+    {{ form.remember() }}
+    <label for="remember">Remember me</label>
+  </div>
+  <button class="btn btn-primary btn-block" type="submit">Login to Admin</button>
+</form>
+<div class="text-center mt-3">
+  <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
+  <p class="mt-2"><a href="{{ url_for('auth.login') }}">Customer? Login to store</a></p>
+</div>
+{% endblock %}

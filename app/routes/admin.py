@@ -6,8 +6,8 @@ from io import BytesIO
 
 from flask import (Blueprint, render_template, redirect, url_for, flash, abort,
                    request, send_file, Response, current_app)
-from flask_login import current_user
-from sqlalchemy import desc, func, and_
+from flask_login import current_user, login_user
+from sqlalchemy import desc, func, and_, or_
 
 from app.extensions import db
 from app.models.catalog import (Category, Brand, Product, ProductImage,
@@ -32,6 +32,38 @@ from app.utils.constants import (ORDER_STATUSES, PAYMENT_STATUSES, SHIPPING_METH
 from app.utils.pdf import generate_invoice_pdf
 
 admin_bp = Blueprint('admin', __name__)
+
+
+# ---------------------------------------------------------------------------
+# Dedicated admin login (separate from customer auth)
+# ---------------------------------------------------------------------------
+@admin_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    from app.forms.customer_forms import LoginForm
+    from app.utils.activity import log_action
+    from app.services.cart_service import merge_guest_cart_to_user
+    from flask_login import current_user as cu
+    if cu.is_authenticated and cu.is_staff:
+        return redirect(url_for('admin.dashboard'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data.lower().strip()
+        user = User.query.filter(or_(User.email == email, User.phone == email)).first()
+        if user and user.check_password(form.password.data):
+            if not user.is_active:
+                flash('Your account has been blocked. Please contact support.', 'danger')
+                return render_template('admin/login.html', form=form)
+            if not user.is_staff:
+                flash('This login is for staff only. Customers use the store login.', 'warning')
+                return render_template('admin/login.html', form=form)
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            login_user(user, remember=form.remember.data)
+            log_action('login', 'user', user.id, f'{user.full_name} logged in (admin)')
+            flash(f'Welcome back, {user.full_name}!', 'success')
+            return redirect(url_for('admin.dashboard'))
+        flash('Invalid email or password.', 'danger')
+    return render_template('admin/login.html', form=form)
 
 
 # ---------------------------------------------------------------------------
