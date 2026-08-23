@@ -1,5 +1,5 @@
 {% extends "customer/base.html" %}
-{% from "customer/macros.html" import product_card, pagination %}
+{% from "customer/macros.html" import product_card, render_pagination %}
 {% block title %}Shop Products - {{ store_name }}{% endblock %}
 
 {% block content %}
@@ -103,7 +103,7 @@
         <div class="product-grid">
           {% for p in products %}{{ product_card(p) }}{% endfor %}
         </div>
-        {{ pagination(pagination, 'products.browse', **dict(args)) }}
+        {{ render_pagination(pagination, 'products.browse', **dict(args)) }}
       {% else %}
         <div class="alert alert-info">No products found matching your filters.</div>
       {% endif %}
