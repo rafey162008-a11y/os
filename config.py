@@ -16,8 +16,21 @@ class Config:
     # Database
     # Defaults to a local SQLite file. Set DATABASE_URL in .env to use
     # PostgreSQL instead, e.g. postgresql://user:pass@localhost:5432/dbname
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'online_shopping.db')
+    _configured_db = os.environ.get('DATABASE_URL')
+    if not _configured_db:
+        _configured_db = 'sqlite:///' + os.path.join(basedir, 'online_shopping.db')
+
+    # Defensive fallback: if a PostgreSQL URL is configured but the driver is
+    # not installed (common on hosts like PythonAnywhere free tier where
+    # external Postgres is unavailable), fall back to a local SQLite file so
+    # the app still boots instead of crashing at import time.
+    if _configured_db.startswith('postgresql'):
+        try:
+            import psycopg2  # noqa: F401
+        except ImportError:
+            _configured_db = 'sqlite:///' + os.path.join(basedir, 'online_shopping.db')
+
+    SQLALCHEMY_DATABASE_URI = _configured_db
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Engine options: SQLite needs check_same_thread disabled for Flask's
