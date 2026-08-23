@@ -139,16 +139,16 @@ def seed_catalog():
         brand_objs.append(br)
 
     sample_products = [
-        ('Smartphone X', 'Electronics', 'Phones', 'Apple', 799.0, 899.0, 50),
-        ('Laptop Pro 15', 'Electronics', 'Laptops', 'Apple', 1499.0, 1699.0, 30),
-        ('Wireless Earbuds', 'Electronics', 'Audio', 'Sony', 129.0, 159.0, 100),
-        ('Men T-Shirt', 'Fashion', 'Men', 'Nike', 19.0, 25.0, 200),
-        ('Running Shoes', 'Fashion', 'Shoes', 'Adidas', 89.0, 110.0, 80),
-        ('Office Chair', 'Home & Kitchen', 'Furniture', 'IKEA', 149.0, 179.0, 40),
-        ('Cookware Set', 'Home & Kitchen', 'Cookware', 'IKEA', 59.0, 79.0, 60),
-        ('Fitness Tracker', 'Sports', 'Fitness', 'Samsung', 49.0, 69.0, 120),
+        ('Smartphone X', 'Electronics', 'Phones', 'Apple', 799.0, 899.0, 50, 'img/products/smartphone-x.svg'),
+        ('Laptop Pro 15', 'Electronics', 'Laptops', 'Apple', 1499.0, 1699.0, 30, 'img/products/laptop-pro-15.svg'),
+        ('Wireless Earbuds', 'Electronics', 'Audio', 'Sony', 129.0, 159.0, 100, 'img/products/wireless-earbuds.svg'),
+        ('Men T-Shirt', 'Fashion', 'Men', 'Nike', 19.0, 25.0, 200, 'img/products/men-t-shirt.svg'),
+        ('Running Shoes', 'Fashion', 'Shoes', 'Adidas', 89.0, 110.0, 80, 'img/products/running-shoes.svg'),
+        ('Office Chair', 'Home & Kitchen', 'Furniture', 'IKEA', 149.0, 179.0, 40, 'img/products/office-chair.svg'),
+        ('Cookware Set', 'Home & Kitchen', 'Cookware', 'IKEA', 59.0, 79.0, 60, 'img/products/cookware-set.svg'),
+        ('Fitness Tracker', 'Sports', 'Fitness', 'Samsung', 49.0, 69.0, 120, 'img/products/fitness-tracker.svg'),
     ]
-    for name, cat, sub, brand, price, old, stock in sample_products:
+    for name, cat, sub, brand, price, old, stock, image in sample_products:
         parent = cat_objs.get(cat)
         subcat = Category.query.filter_by(name=sub).first()
         brand_obj = Brand.query.filter_by(name=brand).first()
@@ -158,6 +158,7 @@ def seed_catalog():
             category_id=parent.id if parent else None,
             subcategory_id=subcat.id if subcat else None,
             brand_id=brand_obj.id if brand_obj else None,
+            main_image=image,
             price=price, old_price=old, cost_price=round(price * 0.6, 2),
             stock_quantity=stock, min_stock_level=10,
             short_description=f"High quality {name}.",

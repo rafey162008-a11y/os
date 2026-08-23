@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="Fitness Tracker">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ec4899"/>
+      <stop offset="1" stop-color="#db2777"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#g)"/>
+  <circle cx="300" cy="300" r="250" fill="#ffffff" opacity="0.08"/>
+  
+        <rect x="270" y="180" width="60" height="240" rx="20" fill="#ffffff" opacity="0.95"/>
+        <rect x="282" y="220" width="36" height="160" rx="10" fill="#ec4899" opacity="0.85"/>
+        <circle cx="300" cy="300" r="22" fill="#ffffff" opacity="0.95"/>
+        <path d="M300 288 v24 M288 300 h24" stroke="#ec4899" stroke-width="5" stroke-linecap="round"/>
+        
+  <text x="300" y="520" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff">Fitness Tracker</text>
+</svg>

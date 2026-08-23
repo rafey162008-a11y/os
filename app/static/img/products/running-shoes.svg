@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="Running Shoes">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#dc2626"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#g)"/>
+  <circle cx="300" cy="300" r="250" fill="#ffffff" opacity="0.08"/>
+  
+        <path d="M200 360 q0 -40 60 -50 l40 -40 q30 -20 60 -10 l40 20 q40 10 40 50 l0 30 l-240 0 z"
+              fill="#ffffff" opacity="0.95"/>
+        <path d="M200 360 l240 0 l0 20 l-240 0 z" fill="#ef4444" opacity="0.85"/>
+        <path d="M260 320 l20 -20 M300 310 l20 -20 M340 305 l20 -15" stroke="#ef4444" stroke-width="6" stroke-linecap="round"/>
+        
+  <text x="300" y="520" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff">Running Shoes</text>
+</svg>
