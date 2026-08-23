@@ -14,7 +14,7 @@
         <td>{% if cat.image %}<img src="{{ product_image_url(cat.image) }}" style="height:40px;width:40px;object-fit:cover;border-radius:6px;">{% else %}<span class="text-muted">-</span>{% endif %}</td>
         <td><strong>{{ cat.name }}</strong></td>
         <td>{{ cat.slug }}</td>
-        <td>{{ cat.subcategories.count() }}</td>
+        <td>{{ cat.subcategories|length }}</td>
         <td><span class="badge bg-{{ 'success' if cat.status == 'active' else 'secondary' }}">{{ cat.status }}</span></td>
         <td>{{ cat.display_order }}</td>
         <td class="text-end">

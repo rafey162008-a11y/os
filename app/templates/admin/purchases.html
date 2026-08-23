@@ -14,7 +14,7 @@
         <td>{{ p.purchase_number }}</td>
         <td>{{ p.purchased_at.strftime('%Y-%m-%d') }}</td>
         <td>{{ p.supplier.name if p.supplier else '-' }}</td>
-        <td>{{ p.items.count() }}</td>
+        <td>{{ p.items|length }}</td>
         <td>{{ money(p.total_amount) }}</td>
         <td>{{ money(p.amount_paid) }}</td>
         <td>{{ money(p.balance) }}</td>
